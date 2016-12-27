@@ -50,7 +50,8 @@ module Garage
     def status?
       with_inverter do |slave|
         status_word = slave.holding_registers[STATUS_WORD].first
-        map_labels_to_word status_word, STATUS_LABELS
+        status_bits = status_word.to_s(2).split('').map(&:to_i)
+        status_bits.each_with_index.map {|val, idx| STATUS_LABELS[idx][val]}
       end
     end
 
@@ -116,8 +117,9 @@ module Garage
 
       with_inverter do |slave|
         # Get current word by reading register
-        word = slave.holding_registers[CONTROL_WORD]
+        word = slave.holding_registers[CONTROL_WORD].first
 
+        puts word.to_s 2
         # Do the block
         # Set the result to the register
         slave.holding_registers[CONTROL_WORD] = yield word
@@ -139,7 +141,7 @@ module Garage
       # Set a single bit of the control word to on or off
       # Shift a 1 across to the bit we want to operate on
       mask = 1 << bit_number
-      puts CONTROL_STATES[bit_number][value]
+      puts "Setting bit: #{CONTROL_STATES[bit_number][value]}"
 
       wordsmash do |word|
         # Manipulates only the bit that we're doing stuff for

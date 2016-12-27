@@ -46,6 +46,13 @@ class Tool < Thor
       puts "Speed = #{@g.speed?}"
     end
   end
+
+  desc "status", "Read motor status"
+
+  def status
+    puts @g.motor?
+    puts @g.status?
+  end
 end
 
 Tool.start(ARGV)
