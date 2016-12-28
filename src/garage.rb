@@ -36,10 +36,19 @@ module Garage
   BIT_NUMBER_POWER = 0
   BIT_NUMBER_DIRECTION = 1
 
-  class Client < ModBus::TCPClient
+  class TCPClient < ModBus::TCPClient
     def initialize
       super '192.168.0.7', 502
     end
+  end
+
+  class RTUClient < ModBus::RTUClient
+    def initialize
+      super '/dev/cu.wchusbserialfd120', 9600
+    end
+  end
+
+  class Client < RTUClient
 
     def temp?
       with_thermometer do |slave|
